@@ -121,7 +121,8 @@ public class FileParserTest {
         String totalPageNotNumeric = "asd, 10, false";
         String colourPageNotNumeric = "10, qwe, false";
         String doubleSidedNotBoolean = "10, 10, 10";
-        for (String row : Arrays.asList(totalPageNotNumeric, colourPageNotNumeric, doubleSidedNotBoolean)) {
+        String colorPageGreaterThanTotalPages = "10, 20, true";
+        for (String row : Arrays.asList(totalPageNotNumeric, colourPageNotNumeric, doubleSidedNotBoolean, colorPageGreaterThanTotalPages)) {
             String filePath = "csv-with-invalid-entry.txt";
             CsvTestHelper.populateCsvFileWithContent(Arrays.asList(header, row), filePath);
             try {
