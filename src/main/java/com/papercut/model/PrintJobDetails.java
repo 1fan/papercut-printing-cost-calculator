@@ -3,14 +3,14 @@ package com.papercut.model;
 import java.math.BigDecimal;
 
 public class PrintJobDetails {
-    private String paperSize;
-    private String printOption;
-    private int totalPages;
-    private int blackWhitePages;
-    private int colourfulPages;
-    private BigDecimal totalCost;
-    private BigDecimal blackWhiteCost;
-    private BigDecimal colourfulCost;
+    protected String paperSize;
+    protected String printOption;
+    protected int totalPages = 0;
+    protected int blackWhitePages = 0;
+    protected int colourfulPages = 0;
+    protected BigDecimal totalCost = BigDecimal.ZERO;
+    protected BigDecimal blackWhiteCost = BigDecimal.ZERO;
+    protected BigDecimal colourfulCost = BigDecimal.ZERO;
 
     public String getPaperSize() {
         return paperSize;

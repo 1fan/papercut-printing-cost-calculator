@@ -8,10 +8,9 @@ import de.vandermeer.asciitable.AT_Context;
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 
-public class PrintJobSummary {
+public class PrintJobSummary extends PrintJobDetails{
 
     private List<PrintJobDetails> printJobDetails = new ArrayList<>();
-    private BigDecimal totalCost = BigDecimal.ZERO;
 
     private final int costSmallestUnitDigit = 2;
 
@@ -22,10 +21,11 @@ public class PrintJobSummary {
     public void addPrintJobDetails(PrintJobDetails printJobDetail) {
         this.printJobDetails.add(printJobDetail);
         this.totalCost = this.totalCost.add(printJobDetail.getTotalCost());
-    }
-
-    public BigDecimal getTotalCost() {
-        return totalCost;
+        this.colourfulCost = this.colourfulCost.add(printJobDetail.getColourfulCost());
+        this.blackWhiteCost = this.blackWhiteCost.add(printJobDetail.getBlackWhiteCost());
+        this.totalPages += printJobDetail.getTotalPages();
+        this.blackWhitePages += printJobDetail.getBlackWhitePages();
+        this.colourfulPages += printJobDetail.getColourfulPages();
     }
 
     private String getCostInString(BigDecimal cost) {
@@ -46,6 +46,10 @@ public class PrintJobSummary {
                     details.getColourfulPages(), getCostInString(details.getTotalCost()), getCostInString(details.getBlackWhiteCost()), getCostInString(details.getColourfulCost()));
             at.addRule();
         }
+        at.addRule();
+        at.addRow("Summary", "/", "/", getTotalPages(), getBlackWhitePages(),
+                getColourfulPages(), getCostInString(getTotalCost()), getCostInString(getBlackWhiteCost()), getCostInString(getColourfulCost()));
+        at.addRule();
         at.setTextAlignment(TextAlignment.CENTER);
         return "Total print jobs: " + printJobDetails.size() + "\n" +
                 at.render() + "\n" +
