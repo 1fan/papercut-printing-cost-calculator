@@ -1,6 +1,6 @@
 package com.papercut.model;
 
-public enum JobType {
+public enum PrintSideOption {
     SINGLE_PAGE,
     DOUBLE_PAGE;
 }

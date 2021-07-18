@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 public class PrintJobDetails {
     private String paperSize;
     private String printOption;
-    private long totalPages;
-    private long blackWhitePages;
-    private long colourfulPages;
+    private int totalPages;
+    private int blackWhitePages;
+    private int colourfulPages;
     private BigDecimal totalCost;
     private BigDecimal blackWhiteCost;
     private BigDecimal colourfulCost;
@@ -28,27 +28,27 @@ public class PrintJobDetails {
         this.printOption = printOption;
     }
 
-    public long getTotalPages() {
+    public int getTotalPages() {
         return totalPages;
     }
 
-    public void setTotalPages(long totalPages) {
+    public void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
     }
 
-    public long getBlackWhitePages() {
+    public int getBlackWhitePages() {
         return blackWhitePages;
     }
 
-    public void setBlackWhitePages(long blackWhitePages) {
+    public void setBlackWhitePages(int blackWhitePages) {
         this.blackWhitePages = blackWhitePages;
     }
 
-    public long getColourfulPages() {
+    public int getColourfulPages() {
         return colourfulPages;
     }
 
-    public void setColourfulPages(long colourfulPages) {
+    public void setColourfulPages(int colourfulPages) {
         this.colourfulPages = colourfulPages;
     }
 
@@ -88,5 +88,53 @@ public class PrintJobDetails {
                 ", blackWhiteCost=" + blackWhiteCost +
                 ", colourfulCost=" + colourfulCost +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PrintJobDetails)) {
+            return false;
+        }
+
+        PrintJobDetails details = (PrintJobDetails) o;
+
+        if (getTotalPages() != details.getTotalPages()) {
+            return false;
+        }
+        if (getBlackWhitePages() != details.getBlackWhitePages()) {
+            return false;
+        }
+        if (getColourfulPages() != details.getColourfulPages()) {
+            return false;
+        }
+        if (getPaperSize() != null ? !getPaperSize().equals(details.getPaperSize()) : details.getPaperSize() != null) {
+            return false;
+        }
+        if (getPrintOption() != null ? !getPrintOption().equals(details.getPrintOption()) : details.getPrintOption() != null) {
+            return false;
+        }
+        if (getTotalCost() != null ? !getTotalCost().equals(details.getTotalCost()) : details.getTotalCost() != null) {
+            return false;
+        }
+        if (getBlackWhiteCost() != null ? !getBlackWhiteCost().equals(details.getBlackWhiteCost()) : details.getBlackWhiteCost() != null) {
+            return false;
+        }
+        return getColourfulCost() != null ? getColourfulCost().equals(details.getColourfulCost()) : details.getColourfulCost() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getPaperSize() != null ? getPaperSize().hashCode() : 0;
+        result = 31 * result + (getPrintOption() != null ? getPrintOption().hashCode() : 0);
+        result = 31 * result + getTotalPages();
+        result = 31 * result + getBlackWhitePages();
+        result = 31 * result + getColourfulPages();
+        result = 31 * result + (getTotalCost() != null ? getTotalCost().hashCode() : 0);
+        result = 31 * result + (getBlackWhiteCost() != null ? getBlackWhiteCost().hashCode() : 0);
+        result = 31 * result + (getColourfulCost() != null ? getColourfulCost().hashCode() : 0);
+        return result;
     }
 }

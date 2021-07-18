@@ -1,5 +1,6 @@
 package com.papercut;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -16,5 +17,9 @@ public class CsvTestHelper {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void deleteFile(String filePath) {
+        new File(filePath).delete();
     }
 }

@@ -2,33 +2,37 @@ package com.papercut;
 
 import java.util.List;
 
-import com.papercut.exception.InvalidFileException;
 import com.papercut.model.PrintJob;
 import com.papercut.model.PrintJobSummary;
 import com.papercut.service.CostCalculator;
 import com.papercut.utils.FileParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.env.Environment;
 
 @SpringBootApplication
 public class CostCalculatorCli implements CommandLineRunner {
 
-    private Environment env;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private FileParser fileParser;
-    @Autowired
-    public void setEnv(Environment env) {
-        this.env = env;
-    }
+    private CostCalculator calculator;
+
     @Autowired
     public void setFileParser(FileParser fileParser) {
         this.fileParser = fileParser;
     }
 
+    @Autowired
+    public void setCalculator(CostCalculator calculator) {
+        this.calculator = calculator;
+    }
+
     public static void main(String[] args) {
-        SpringApplication.run(CostCalculatorCli.class, args);
+        SpringApplication.run(CostCalculatorCli.class, args).close();
     }
 
     /**
@@ -38,17 +42,23 @@ public class CostCalculatorCli implements CommandLineRunner {
      */
     @Override
     public void run(String... args) {
-        CostCalculator calculator = new CostCalculator();
+        if (args.length == 0) {
+            System.out.println("No CSV Filepath is provided.");
+            return;
+        }
+
         for (String filePath : args) {
             try {
                 List<PrintJob> jobs = fileParser.parsePrintJobFromCsv(filePath);
                 PrintJobSummary summary = calculator.generateTotalPrintJobDetails(jobs);
-                System.out.println(summary.toString());
-
-            } catch (InvalidFileException e) {
-                e.printStackTrace();
+                System.out.printf("Print Job Summary for file - %s:%n", filePath);
+                System.out.println(summary.toString() + "\n");
+            } catch (Exception e) {
+                String errorMsg = String.format("Calculation Failed for file %s: %s", filePath, e.toString());
+                logger.warn(errorMsg, e);
+                System.out.println(errorMsg);
             }
         }
-        System.exit(-1);
+
     }
 }

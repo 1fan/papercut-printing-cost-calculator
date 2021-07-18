@@ -18,4 +18,5 @@ Requirement:
 * Unit Tests
 
 
-
+# Assumption:
+* currency smallest unit digit is 2.

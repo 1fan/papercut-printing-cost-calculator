@@ -10,6 +10,7 @@ import com.papercut.model.PrintJob;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -18,17 +19,24 @@ public class FileParserTest {
     private final String header = "Total Pages, Color Pages, Double Sided";
     private Environment env = Mockito.mock(Environment.class);
     FileParser fileParser = new FileParser();
+    String filePath = "";
 
     @BeforeMethod
     void setUp() {
         fileParser = new FileParser();
-        Mockito.when(env.getProperty(Mockito.eq("csv.contains.header"), Mockito.anyString())).thenReturn("true");
+        Mockito.when(env.getProperty(Mockito.eq("csv.contains.header"), Mockito.eq(Boolean.class), Mockito.any())).thenReturn(true);
+        Mockito.when(env.getProperty(Mockito.eq("csv.max.size.mb"), Mockito.eq(Integer.class), Mockito.any())).thenReturn(50);
         fileParser.setEnv(env);
+    }
+
+    @AfterMethod
+    void clearUp() {
+        CsvTestHelper.deleteFile(filePath);
     }
 
     @Test
     void shouldParseEmptyCsvFile() {
-        String filePath = "empty-csv.csv";
+        filePath = "empty-csv.csv";
         CsvTestHelper.populateCsvFileWithContent(Arrays.asList(), filePath);
         try {
             List<PrintJob> printJobs = fileParser.parsePrintJobFromCsv(filePath);
@@ -36,44 +44,44 @@ public class FileParserTest {
         } catch (Exception e) {
             Assert.fail();
         }
-        new File(filePath).delete();
     }
 
     @Test
     void shouldParseCsvFileWithValidEntriesWithHeader() {
-        String filePath = "one-job-csv.csv";
-        CsvTestHelper.populateCsvFileWithContent(Arrays.asList(header, "25, 10, false"), filePath);
+        filePath = "one-job-csv.csv";
+        String row = "25, 10, false";
+        CsvTestHelper.populateCsvFileWithContent(Arrays.asList(header, row), filePath);
         try {
             List<PrintJob> printJobs = fileParser.parsePrintJobFromCsv(filePath);
             Assert.assertEquals(printJobs.size(), 1);
-            PrintJob job = new PrintJob(25, 10, false);
+            PrintJob job = new PrintJob(row);
             Assert.assertEquals(printJobs.get(0), job);
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail();
         }
-        new File(filePath).delete();
     }
 
     @Test
     void shouldParseCsvFileWithValidEntriesWithoutHeader() {
-        String filePath = "one-job-csv.csv";
-        CsvTestHelper.populateCsvFileWithContent(Arrays.asList("25, 10, false"), filePath);
-        Mockito.when(env.getProperty(Mockito.eq("csv.contains.header"), Mockito.anyString())).thenReturn("false");
+        filePath = "one-job-csv.csv";
+        String row = "25, 10, false";
+        CsvTestHelper.populateCsvFileWithContent(Arrays.asList(row), filePath);
+        Mockito.when(env.getProperty(Mockito.eq("csv.contains.header"), Mockito.eq(Boolean.class), Mockito.any())).thenReturn(false);
         try {
             List<PrintJob> printJobs = fileParser.parsePrintJobFromCsv(filePath);
             Assert.assertEquals(printJobs.size(), 1);
-            PrintJob job = new PrintJob(25, 10, false);
+            PrintJob job = new PrintJob(row);
             Assert.assertEquals(printJobs.get(0), job);
         } catch (Exception e) {
             Assert.fail();
         }
-        new File(filePath).delete();
     }
 
 
     @Test
     void shouldThrowInvalidFileExceptionWhenFileNotExisted() {
-        String filePath = "not-existed-file.csv";
+        filePath = "not-existed-file.csv";
         try {
             fileParser.parsePrintJobFromCsv(filePath);
             Assert.fail();
@@ -84,7 +92,7 @@ public class FileParserTest {
 
     @Test
     void shouldThrowInvalidFileExceptionWhenFileIsNotCSV() {
-        String filePath = "not-csv-file.txt";
+        filePath = "not-csv-file.txt";
         CsvTestHelper.populateCsvFileWithContent(Arrays.asList(header, "25, 10, false"), filePath);
         try {
             fileParser.parsePrintJobFromCsv(filePath);
@@ -92,7 +100,6 @@ public class FileParserTest {
         } catch (Exception e) {
             Assert.assertTrue(e instanceof InvalidFileException);
         }
-        new File(filePath).delete();
     }
 
     @Test
@@ -112,7 +119,7 @@ public class FileParserTest {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof InvalidFileException);
             }
-            new File(filePath).delete();
+            CsvTestHelper.deleteFile(filePath);
         }
     }
 
@@ -131,7 +138,7 @@ public class FileParserTest {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof InvalidFileException);
             }
-            new File(filePath).delete();
+            CsvTestHelper.deleteFile(filePath);
         }
     }
 
@@ -156,7 +163,22 @@ public class FileParserTest {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof InvalidFileException);
             }
-            new File(filePath).delete();
+            CsvTestHelper.deleteFile(filePath);
+        }
+    }
+
+    @Test
+    void shouldThrowInvalidFileExceptionWhenFileExceedSizeRestriction() {
+        Mockito.when(env.getProperty(Mockito.eq("csv.max.size.mb"), Mockito.eq(Integer.class), Mockito.any())).thenReturn(0);
+        filePath = "one-job-csv.csv";
+        String row = "25, 10, false";
+        CsvTestHelper.populateCsvFileWithContent(Arrays.asList(row), filePath);
+        Mockito.when(env.getProperty(Mockito.eq("csv.contains.header"), Mockito.eq(Boolean.class), Mockito.any())).thenReturn(false);
+        try {
+            List<PrintJob> printJobs = fileParser.parsePrintJobFromCsv(filePath);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof InvalidFileException);
         }
     }
 }
