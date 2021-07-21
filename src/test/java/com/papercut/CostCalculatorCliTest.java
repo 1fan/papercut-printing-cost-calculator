@@ -18,7 +18,7 @@ public class CostCalculatorCliTest {
     void setUp() throws UnSupportedTaskException {
         fileParser = Mockito.mock(FileParser.class);
         calculator = Mockito.mock(CostCalculator.class);
-        Mockito.when(calculator.generateTotalPrintJobDetails(Mockito.any())).thenReturn(new PrintJobSummary());
+        Mockito.when(calculator.generatePrintJobSummary(Mockito.any())).thenReturn(new PrintJobSummary());
         cli.setCalculator(calculator);
         cli.setFileParser(fileParser);
     }
@@ -34,7 +34,7 @@ public class CostCalculatorCliTest {
             Mockito.verify(fileParser, Mockito.times(1)).parsePrintJobFromCsv(Mockito.eq("filePath1"));
             Mockito.verify(fileParser, Mockito.times(1)).parsePrintJobFromCsv(Mockito.eq("filePath2"));
             Mockito.verify(fileParser, Mockito.times(1)).parsePrintJobFromCsv(Mockito.eq("filePath3"));
-            Mockito.verify(calculator, Mockito.times(3)).generateTotalPrintJobDetails(Mockito.any());
+            Mockito.verify(calculator, Mockito.times(3)).generatePrintJobSummary(Mockito.any());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,9 +43,9 @@ public class CostCalculatorCliTest {
     @Test
     void shouldHandleZeroArgsProperly() {
         try {
-            cli.run(new String[] {});
+            cli.run();
             Mockito.verify(fileParser, Mockito.times(0)).parsePrintJobFromCsv(Mockito.any());
-            Mockito.verify(calculator, Mockito.times(0)).generateTotalPrintJobDetails(Mockito.any());
+            Mockito.verify(calculator, Mockito.times(0)).generatePrintJobSummary(Mockito.any());
         } catch (Exception e) {
             Assert.fail();
         }

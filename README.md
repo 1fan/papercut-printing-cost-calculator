@@ -40,7 +40,7 @@ Support for other paper sizes will be added in the future.
 
 # Configuration
 
-Application is configurable by updating the application.properties file. Currently, the following configs are supported:
+Application is configurable by using the application.properties file. Currently, some supported configs and default values are as followed:
 
 * the maximum/minimum pages allowed for each print task(defined in each row of the csv file)
     * total.pages.max=10000
@@ -60,14 +60,14 @@ Application is configurable by updating the application.properties file. Current
 
 # Build And Run
 
-This project requires `Maven 3.6` to build and `Java 8` to run. Please follow the following steps to build and run this project:
+This project requires `Maven 3.6` and `Java 8` to build and run. Please follow the following steps to get this project running:
 
 1. Clone this repository
    ```
    git clone https://github.com/1fan/papercut-printing-cost-calculator.git
    ```
 2. Go to the local directory and execute `clean-and-build.sh`.  
-   This step will do a `mvn clean install` and move the jar file and related files(config files, sample json files, etc) into a new
+   This step will do a `mvn clean install` and move the jar file and related files(config files, run.sh, etc) into a new
    folder `./deployment`
 
     ```
@@ -86,7 +86,7 @@ This project requires `Maven 3.6` to build and `Java 8` to run. Please follow th
     ```   
 
 3. Go to the `./deployment` folder.\
-   You can change the configuration if needed. By default, configuration file and json files are all put in `./config` folder, you can
+   You can change the configuration if needed. By default, configuration file and log4j2.xml files are both put in `./config` folder, you can
    replace the value as per requirements.
 
 4. Run the application

@@ -21,7 +21,7 @@ public class CostCalculator {
         this.env = env;
     }
 
-    public PrintJobSummary generateTotalPrintJobDetails(List<PrintJob> printJobs) throws UnSupportedTaskException {
+    public PrintJobSummary generatePrintJobSummary(List<PrintJob> printJobs) throws UnSupportedTaskException {
         if(allowedPaperSize == null) {
             allowedPaperSize = env.getProperty("allowed.paper.size", List.class, Collections.singletonList("a4"));
         }

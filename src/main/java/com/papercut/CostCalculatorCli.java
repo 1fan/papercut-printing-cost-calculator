@@ -36,7 +36,7 @@ public class CostCalculatorCli implements CommandLineRunner {
     }
 
     /**
-     * Read a CSV file in which each row defined a printing task, print the details of each task as well as the total cost.
+     * Read CSV files from the filepath that is provided by commandline arguments, calculate and print the cost details to the console.
      *
      * @param args - contain the filepath(s) of csv file(s) that need to be parsed.
      */
@@ -50,7 +50,7 @@ public class CostCalculatorCli implements CommandLineRunner {
         for (String filePath : args) {
             try {
                 List<PrintJob> jobs = fileParser.parsePrintJobFromCsv(filePath);
-                PrintJobSummary summary = calculator.generateTotalPrintJobDetails(jobs);
+                PrintJobSummary summary = calculator.generatePrintJobSummary(jobs);
                 System.out.printf("Print Job Summary for file - %s:%n", filePath);
                 System.out.println(summary.toString() + "\n");
             } catch (Exception e) {

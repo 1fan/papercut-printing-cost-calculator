@@ -11,7 +11,6 @@ import com.papercut.model.*;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -37,7 +36,7 @@ public class CostCalculatorTest {
         PrintJob row2 = new PrintJob(55, 13, true);
         PrintJob row3 = new PrintJob(502, 22, true);
         PrintJob row4 = new PrintJob(1, 0, false);
-        PrintJobSummary summary = calculator.generateTotalPrintJobDetails(Arrays.asList(row1, row2, row3, row4));
+        PrintJobSummary summary = calculator.generatePrintJobSummary(Arrays.asList(row1, row2, row3, row4));
         Assert.assertEquals(summary.getTotalCost().scaleByPowerOfTen(-2).toString(), "64.10");
         Assert.assertEquals(summary.getPrintJobDetails().size(), 4);
 
@@ -104,7 +103,7 @@ public class CostCalculatorTest {
         PrintJob mixtureOfBlackWhiteAndColourSingle = new PrintJob(60, 50, false);
         PrintJob mixtureOfBlackWhiteAndColourDouble = new PrintJob(70, 30, true);
 
-        PrintJobSummary summary = calculator.generateTotalPrintJobDetails(Arrays.asList(onlyBlackAndWhiteSingle, onlyColourSingle, onlyBlackAndWhiteDouble, onlyColourDouble, mixtureOfBlackWhiteAndColourSingle, mixtureOfBlackWhiteAndColourDouble));
+        PrintJobSummary summary = calculator.generatePrintJobSummary(Arrays.asList(onlyBlackAndWhiteSingle, onlyColourSingle, onlyBlackAndWhiteDouble, onlyColourDouble, mixtureOfBlackWhiteAndColourSingle, mixtureOfBlackWhiteAndColourDouble));
         //total price: 10*15 + 20*25 + 30*10 + 40*20 + (10*15 + 50*25) + (40*10 + 30*20)) = 4150 Cents
         Assert.assertEquals(summary.getTotalCost().longValue(), 4150);
         Assert.assertEquals(summary.getPrintJobDetails().size(), 6);
@@ -191,10 +190,10 @@ public class CostCalculatorTest {
 
     @Test
     void shouldThrowUnSupportedTaskExceptionIfPaperSizeNotSupported() {
-        Mockito.when(env.getProperty(Mockito.eq("allowed.paper.size"), Mockito.eq(List.class), Mockito.any())).thenReturn(Arrays.asList("a5"));
+        Mockito.when(env.getProperty(Mockito.eq("allowed.paper.size"), Mockito.eq(List.class), Mockito.any())).thenReturn(Collections.singletonList("a5"));
         try {
             PrintJob row1 = new PrintJob(25, 10, false);
-            PrintJobSummary summary = calculator.generateTotalPrintJobDetails(Collections.singletonList(row1));
+            PrintJobSummary summary = calculator.generatePrintJobSummary(Collections.singletonList(row1));
             Assert.fail();
         } catch (Exception e) {
             //should throw UnSupportedTaskException since paper size is not supported
