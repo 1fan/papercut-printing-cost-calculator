@@ -27,17 +27,6 @@ The application should:
 
 Support for other paper sizes will be added in the future.
 
-# Assumption:
-
-* The smallest unit for the amount is 2 digit. (For instance, for AUD, 50 cent is 0.5 AUD. While the smallest unit for Japanese Yen is 3
-  digit. We will just ignore it for now.)
-    * By default, the csv filie contains the header. But this can be configured by set `csv.contains.header` to `true` or `false`
-* Each row of the file contains 3 and only 3 column: Total Pages, Colour Pages and Double Sided. All 3 fields are mandatory, if any field is
-  not provided or is incorrect, the calculation will terminate with error message accordingly.
-    * Total Pages: numeric value from 0 to max limit(configured in application.properties "total.pages.max", default is 10000);
-    * Colour Pages: numeric value from 0 to the total page number;
-    * Double Sided: casse is ignored and value could be "true" or "false"
-
 # Configuration
 
 Application is configurable by using the application.properties file. Currently, some supported configs and default values are as followed:
@@ -57,6 +46,17 @@ Application is configurable by using the application.properties file. Currently,
     * a4.singlepage.colour.cent=25
     * a4.doublepage.blackwhite.cent=10
     * a4.doublepage.colour.cent=20
+
+# Assumption
+
+* The smallest unit for the amount is 2 digit. (For instance, for AUD, 50 cent is 0.5 AUD. While the smallest unit for Japanese Yen is 3
+  digit. We will just ignore it for now.)
+* By default, the csv filie contains the header. But this can be configured by setting `csv.contains.header` to `true` or `false`
+* Each row of the file contains 3 and only 3 column: Total Pages, Colour Pages and Double Sided. All 3 fields are mandatory, if any field is
+  not provided or is incorrect, the calculation will terminate with error message accordingly.
+    * Total Pages: numeric value from 0 to max limit(configured in application.properties "total.pages.max", default is 10000);
+    * Colour Pages: numeric value from 0 to the total page number;
+    * Double Sided: casse is ignored and value could be "true" or "false"
 
 # Build And Run
 
@@ -86,8 +86,8 @@ This project requires `Maven 3.6` and `Java 8` to build and run. Please follow t
     ```   
 
 3. Go to the `./deployment` folder.\
-   You can change the configuration if needed. By default, configuration file and log4j2.xml files are both put in `./config` folder, you can
-   replace the value as per requirements.
+   You can change the configuration if needed. By default, configuration file and log4j2.xml files are both put in `./config` folder, you
+   can replace the value as per requirements.
 
 4. Run the application
    ```

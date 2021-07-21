@@ -36,9 +36,9 @@ public class CostCalculatorCli implements CommandLineRunner {
     }
 
     /**
-     * Read CSV files from the filepath that is provided by commandline arguments, calculate and print the cost details to the console.
+     * Read CSV files from the filepath provided by commandline arguments, calculate and print the cost details to the console.
      *
-     * @param args - contain the filepath(s) of csv file(s) that need to be parsed.
+     * @param args - the filepath(s) of csv file(s) that need to be parsed.
      */
     @Override
     public void run(String... args) {
